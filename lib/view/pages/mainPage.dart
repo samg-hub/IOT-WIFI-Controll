@@ -6,7 +6,7 @@ import '../../viewModel/homeViewModel/homeViewModel.dart';
 class MainPage extends StatefulWidget {
   const MainPage({super.key});
   @override
-  State<MainPage> createState() => _MainPageState();
+  State<MainPage> createState() => _MainPageState(); // new change
 }
 
 class _MainPageState extends State<MainPage> {
