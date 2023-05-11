@@ -31,4 +31,6 @@ class ApiEndPoints {
   final String driverScore = "driver_score_api/";
   final String checkApkVersion = "mobile_app_passenger_apk_version_status_api/";
   final String mobileAppGetSupportinfoApi = "mobile_app_get_support_info_api/";
+
+  final String espInput = "submit";
 }

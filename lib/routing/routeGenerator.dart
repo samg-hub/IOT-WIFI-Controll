@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:v2rayadmin/view/pages/profilePage.dart';
+import 'package:v2rayadmin/view/pages/mainPage.dart';
 
 import '../main.dart';
 
@@ -9,7 +9,7 @@ class RouteGenerator {
 
     switch (settings.name) {
       case '/':
-        return MaterialPageRoute(builder: (_) => const ProfilePage());
+        return MaterialPageRoute(builder: (_) => const MainPage());
       // case '/login' : return MaterialPageRoute(builder:(_)=>const LoginPage());
       // case '/profile' : return MaterialPageRoute(builder:(_)=>profile_page());
       // case '/load' : return MaterialPageRoute(builder:(_)=>load_page());

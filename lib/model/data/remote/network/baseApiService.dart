@@ -3,7 +3,7 @@ import 'package:http/http.dart' as http;
 
 abstract class BaseApiService {
   //this base url and access token are temp and should change in future
-  final String xTravelBaseUrl = "http://192.165.59.140/api/";
+  final String xTravelBaseUrl = "http://192.168.4.1/";
   //to call get api s from our server
   Future<dynamic> getResponse(String url, {String queryParms = ""});
   //to call patch api s from our server
