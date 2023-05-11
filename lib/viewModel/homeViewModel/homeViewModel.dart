@@ -12,6 +12,29 @@ class HomeViewModel extends ChangeNotifier{
   //this instance of HomeRepositoryImpl is for accessing to APIs
   final _myRepo = HomeRepoImp();
 
+  ApiResponse<dynamic> espInputResponse = ApiResponse.notCalled();
+  void _setInputDataResponse(ApiResponse<String> response)async{
+    debugPrintFunction("_sendInputData");
+    try{
+      espInputResponse = response;
+      await Future.delayed(const Duration(milliseconds: 1));
+      notifyListeners();
+      debugPrintFunction("Update Status of _setInputData");
+    }catch(e){
+      debugPrintFunction("_send Input Err : $e");
+    }
+  }
+  Future<void> sendInputData(String input)async{
+    debugPrintFunction("send Input...");
+    await _myRepo.sendInputRepo(input).onError((error, stackTrace){
+      debugPrintFunction("Error on sending Data $error");
+      _setInputDataResponse(ApiResponse.error(error.toString()));
+    }).then((value){
+      debugPrintFunction("input send Success");
+      _setInputDataResponse(ApiResponse.completed("Done"));
+    });
+  }
+
   ApiResponse<HomeModel> homeDataResponse = ApiResponse.notCalled();
   void _setHomeDataResponse(ApiResponse<HomeModel> response)async{
     debugPrintFunction("__setHomeDataResponse");

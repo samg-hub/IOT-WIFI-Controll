@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:v2rayadmin/view/pages/home.dart';
 import 'package:v2rayadmin/view/pages/mainPage.dart';
 
 import '../main.dart';
@@ -9,7 +10,7 @@ class RouteGenerator {
 
     switch (settings.name) {
       case '/':
-        return MaterialPageRoute(builder: (_) => const MainPage());
+        return MaterialPageRoute(builder: (_) =>  HomePage(cameras));
       // case '/login' : return MaterialPageRoute(builder:(_)=>const LoginPage());
       // case '/profile' : return MaterialPageRoute(builder:(_)=>profile_page());
       // case '/load' : return MaterialPageRoute(builder:(_)=>load_page());

@@ -19,27 +19,34 @@ class _MainPageState extends State<MainPage> {
         child: Consumer<HomeViewModel>(
           builder: (context, homeVm, child) {
             return Scaffold(
-                backgroundColor: Colors.red,
+                backgroundColor: Colors.white,
                 body: Directionality(
                   textDirection: TextDirection.rtl,
-                  child: SizedBox(
-                    height: MediaQuery.of(context).size.height,
-                    child: Stack(
+                  child: SafeArea(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                        Positioned(
-                          left: 0,
-                          right: 0,
-                          top: 0,
-                          bottom: 0,
-                          child: Column(
-                            children: [
-                              SizedBox(
-                                width: size.width,
-                                height: size.height / 5,
-                              ),
-                            ],
+                        Material(
+                          color: Colors.transparent,
+                          child: Container(
+                            height: 56,
+                            decoration: const BoxDecoration(color: Colors.blue),
+                            child: InkWell(
+                              onTap: ()async {
+                                print("tap");
+                                homeVm.sendInputData("data");
+                              },
+                              overlayColor: MaterialStateColor.resolveWith(
+                                  (states) => Colors.blueGrey),
+                              child: const Center(
+                                  child: Text(
+                                "send Data",
+                                style: TextStyle(color: Colors.white),
+                              )),
+                            ),
                           ),
-                        ),
+                        )
                       ],
                     ),
                   ),

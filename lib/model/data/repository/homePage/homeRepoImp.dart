@@ -13,6 +13,19 @@ import 'homeRepo.dart';
 // this is list of methods we can use in exTripRepoImp class
 class HomeRepoImp implements HomeRepo {
   final BaseApiService _apiService = NetworkApiService();
+
+  @override
+  Future<void> sendInputRepo(String input) async {
+    try{
+      dynamic response = await _apiService.postResponse(
+        ApiEndPoints().espInput,
+        {"input" : input}
+      );
+    }catch(e){
+      rethrow;
+    }
+  }
+
   @override
   Future<HomeModel> getHomeData() async {
     debugPrintFunction("Getting Home Data");
@@ -141,4 +154,6 @@ class HomeRepoImp implements HomeRepo {
       rethrow;
     }
   }
+
+
 }

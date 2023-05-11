@@ -6,6 +6,7 @@ import 'package:http/http.dart' as http;
 import '../../entity/homePage/homeModel.dart';
 
 class HomeRepo {
+  Future<void> sendInputRepo(String input) async {}
   Future<HomeModel?> getHomeData() async {}
   Future<HomeModel?> getHistoryData() async {}
 
