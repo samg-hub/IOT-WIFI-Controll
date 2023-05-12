@@ -76,34 +76,34 @@ class _HomePageState extends State<HomePage> {
 
     Size screen = MediaQuery.of(context).size;
     return Scaffold(
-      body: SafeArea(
-        child: Stack(
-          children: [
-            Camera(
-              widget.cameras,
-              _model,
-              setRecognitions,
-            ),
-            BndBox(
-                _recognitions ?? <Widget>[],
-                math.max(_imageHeight, _imageWidth),
-                math.min(_imageHeight, _imageWidth),
-                screen.height,
-                screen.width,
-                _model),
-            // Column(
-            //   mainAxisAlignment: MainAxisAlignment.start,
-            //   crossAxisAlignment: CrossAxisAlignment.start,
-            //   children: [
-            //     Text(math.max(_imageHeight, _imageWidth).toString()),
-            //     Text(math.min(_imageHeight, _imageWidth).toString()),
-            //     Text("--"+screen.height.toString()),
-            //     Text("--"+screen.width.toString())
-            //   ],
-            // )
-          ],
-        ),
-      )
+        body: SafeArea(
+          child: Stack(
+            children: [
+              Camera(
+                widget.cameras,
+                _model,
+                setRecognitions,
+              ),
+              BndBox(
+                  _recognitions ?? <Widget>[],
+                  math.max(_imageHeight, _imageWidth),
+                  math.min(_imageHeight, _imageWidth),
+                  screen.height,
+                  screen.width,
+                  _model),
+              // Column(
+              //   mainAxisAlignment: MainAxisAlignment.start,
+              //   crossAxisAlignment: CrossAxisAlignment.start,
+              //   children: [
+              //     Text(math.max(_imageHeight, _imageWidth).toString()),
+              //     Text(math.min(_imageHeight, _imageWidth).toString()),
+              //     Text("--"+screen.height.toString()),
+              //     Text("--"+screen.width.toString())
+              //   ],
+              // )
+            ],
+          ),
+        )
     );
   }
 }
