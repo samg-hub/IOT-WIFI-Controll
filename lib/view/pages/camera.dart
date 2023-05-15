@@ -1,20 +1,23 @@
 import 'dart:io';
-import 'dart:typed_data';
+import 'dart:math';
 import 'package:flutter/material.dart';
-import 'package:camera/camera.dart';
-import 'package:flutter/services.dart';
+import 'package:http/http.dart' as http;
+import 'package:path_provider/path_provider.dart';
 import 'package:tflite/tflite.dart';
+import 'package:path/path.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'dart:math' as math;
-import 'models.dart';
+
+File? lastFile ;
 
 typedef void Callback(List<dynamic> list, int h, int w);
 
 class Camera extends StatefulWidget {
-  final List<CameraDescription> cameras;
   final Callback setRecognitions;
   final String model;
+  final String picAddress;
 
-  Camera(this.cameras, this.model, this.setRecognitions);
+  Camera(this.model, this.setRecognitions,this.picAddress);
 
   @override
   _CameraState createState() => _CameraState();
@@ -27,109 +30,14 @@ class _CameraState extends State<Camera> {
   @override
   void initState() {
     super.initState();
-
-    File img = File('assets/cup2.png');
-    Tflite.detectObjectOnImage(
-        path:img.path ,
-        imageMean: 127.5, // defaults to 0.0
-        numResultsPerClass: 2,
-        imageStd:
-        255.0, // defaults to https://github.com/shaqian/flutter_tflite/blob/master/lib/tflite.dart#L219
-        // outputType: "png", // defaults to "png"
-        asynch: true // defaults to true
-      // bytesList: img.planes.map((plane) {
-      //   return plane.bytes;
-      // }).toList(),
-      // imageHeight: img.height,
-      // imageWidth: img.width,
-      // numResults: 2,
-    )
-        .then((recognitions) {
-      int endTime = DateTime.now().millisecondsSinceEpoch;
-      print("Detection -------------------------- took ");
-
-      widget.setRecognitions(recognitions!, 300, 300);
-
-      isDetecting = false;
-    });
-
-    // if (widget.cameras == null || widget.cameras.length < 1) {
-    //   print('No camera is found');
-    // } else {
-    //   controller = CameraController(
-    //     widget.cameras[0],
-    //     ResolutionPreset.high,
-    //   );
-    //
-    //   controller.initialize().then((_) {
-    //     if (!mounted) {
-    //       return;
-    //     }
-    //     setState(() {});
-
-        //   controller.startImageStream((CameraImage img) {
-        //     if (!isDetecting) {
-        //       isDetecting = true;
-        //
-        //       int startTime = DateTime.now().millisecondsSinceEpoch;
-        //
-        //       if (widget.model == mobilenet) {
-        //
-        //       } else if (widget.model == posenet) {
-        //         Tflite.runPoseNetOnFrame(
-        //           bytesList: img.planes.map((plane) {
-        //             return plane.bytes;
-        //           }).toList(),
-        //           imageHeight: img.height,
-        //           imageWidth: img.width,
-        //           numResults: 2,
-        //         ).then((recognitions) {
-        //           int endTime = DateTime.now().millisecondsSinceEpoch;
-        //           print("Detection took ${endTime - startTime}");
-        //
-        //           widget.setRecognitions(recognitions!, img.height, img.width);
-        //
-        //           isDetecting = false;
-        //         });
-        //       } else {
-        //         Tflite.detectObjectOnFrame(
-        //           bytesList: img.planes.map((plane) {
-        //             return plane.bytes;
-        //           }).toList(),
-        //           model: widget.model == yolo ? "YOLO" : "SSDMobileNet",
-        //           imageHeight: img.height,
-        //           imageWidth: img.width,
-        //           imageMean: widget.model == yolo ? 0 : 127.5,
-        //           imageStd: widget.model == yolo ? 255.0 : 127.5,
-        //           numResultsPerClass: 1,
-        //           threshold: widget.model == yolo ? 0.2 : 0.4,
-        //         ).then((recognitions) {
-        //           int endTime = DateTime.now().millisecondsSinceEpoch;
-        //           print("Detection took ${endTime - startTime}");
-        //
-        //           widget.setRecognitions(recognitions!, img.height, img.width);
-        //
-        //           isDetecting = false;
-        //         });
-        //       }
-        //     }
-        //   });
-    //   });
-    // }
+    isDetecting = false;
   }
-
   @override
   void dispose() {
-    // controller?.dispose();
     super.dispose();
   }
-
   @override
   Widget build(BuildContext context) {
-    // if (controller == null || !controller.value.isInitialized) {
-    //   return Container();
-    // }
-
     Size? tmp = MediaQuery.of(context).size;
     var screenH = math.max(tmp.height, tmp.width);
     var screenW = math.min(tmp.height, tmp.width);
@@ -140,15 +48,77 @@ class _CameraState extends State<Camera> {
     var previewRatio = previewH / previewW;
 
     return OverflowBox(
-      maxHeight:
-          screenRatio > previewRatio ? screenH : screenW / previewW * previewH,
-      maxWidth:
-          screenRatio > previewRatio ? screenH / previewH * previewW : screenW,
-      child: Container(
-        height: 300,
-        width: 300,
-        child: Image.asset("assets/cup2.png") ,
-      ),
-    );
+      maxHeight: 300,
+      maxWidth: 300,
+      alignment: AlignmentDirectional.topStart,
+      child:InkWell(
+        onTap: (){
+          setState(() {
+            isDetecting = false;
+          });
+        },
+        child: Container(
+          color: Colors.white,
+          height: 300,
+          width: 300,
+          child:lastFile == null? FutureBuilder(
+            future:fileFromImageUrl(),
+            builder: (context, snapshot){
+              if(snapshot.connectionState == ConnectionState.waiting){
+                return Container(color: Colors.white,child: const Center(child: Text("waiting",style: TextStyle(color: Colors.black),),),);
+              }else if(snapshot.connectionState == ConnectionState.done){
+                  print("Get image on ${snapshot.data!}");
+                  Tflite.detectObjectOnImage(
+                    path: snapshot.data!.path,
+                    imageMean: 127.5, // defaults to 0.0
+                    numResultsPerClass: 1,
+                    threshold:  0.4,
+                    imageStd:127.5,
+                    asynch: true, // defaults to true
+                  ).then((recognitions) {
+                    isDetecting = true;
+                    widget.setRecognitions(recognitions!, 300, 300);
+                  });
+                  return Image.file(snapshot.data!);
+              }else{
+                return Container(color: Colors.red,child: const Center(child: Text("Error Loading Image!"),),);
+              }
+            },
+          ):InkWell(
+            onTap: (){
+              setState(() {
+                isDetecting = false;
+              });
+            },
+            child: Image.file(lastFile!),
+          ),
+        ),
+      )
+      );
+  }
+  Future<File?> fileFromImageUrl() async {
+    if(!isDetecting){
+      isDetecting = true;
+      print("start to file from Image URL");
+      File response = await http.get(Uri.parse(widget.picAddress)).then((response)async{
+        final documentDirectory = await getApplicationDocumentsDirectory();
+        final file = File(join(documentDirectory.path, '${generatePassword(6)}.jpg'));
+        file.writeAsBytesSync(response.bodyBytes);
+        print("response Image File = ${file.path} / ${response.statusCode}");
+        lastFile = file;
+        return file;
+      }).onError((error, stackTrace){
+        print("error");
+        return Future.error(error.toString());
+      });
+      closeInAppWebView().toString();
+      return response;
+    }
+  }
+  String generatePassword(int length) {
+    const chars = 'abcdefghijklmnopqrstuvwxyz0123456789';
+    final random = Random.secure();
+    return String.fromCharCodes(Iterable.generate(
+        length, (_) => chars.codeUnitAt(random.nextInt(chars.length))));
   }
 }

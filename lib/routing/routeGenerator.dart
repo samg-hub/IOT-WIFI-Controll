@@ -10,15 +10,7 @@ class RouteGenerator {
 
     switch (settings.name) {
       case '/':
-        return MaterialPageRoute(builder: (_) =>  HomePage(cameras));
-      // case '/login' : return MaterialPageRoute(builder:(_)=>const LoginPage());
-      // case '/profile' : return MaterialPageRoute(builder:(_)=>profile_page());
-      // case '/load' : return MaterialPageRoute(builder:(_)=>load_page());
-      // case '/updatePage' : return MaterialPageRoute(builder:(_)=>update_page());
-      // case '/home':
-      //   return MaterialPageRoute(
-      //     builder: (_) => HomePage(),
-      //   );
+        return MaterialPageRoute(builder: (_) =>  HomePage());
       default:
         return _errorRoute();
     }

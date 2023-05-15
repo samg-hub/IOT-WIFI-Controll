@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:camera/camera.dart';
+import 'package:flutter/services.dart';
 import 'package:tflite/tflite.dart';
 import 'dart:math' as math;
 import 'camera.dart';
@@ -7,9 +8,8 @@ import 'bndbox.dart';
 import 'models.dart';
 
 class HomePage extends StatefulWidget {
-  final List<CameraDescription> cameras;
 
-  HomePage(this.cameras);
+  HomePage();
 
   @override
   _HomePageState createState() => _HomePageState();
@@ -23,38 +23,19 @@ class _HomePageState extends State<HomePage> {
 
   @override
   void initState() {
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.landscapeRight,
+      DeviceOrientation.landscapeLeft,
+    ]);
     loadModel();
     super.initState();
 
   }
 
   loadModel() async {
-    String? res;
-    switch (_model) {
-      case yolo:
-        res = await Tflite.loadModel(
-          model: "assets/yolov2_tiny.tflite",
-          labels: "assets/yolov2_tiny.txt",
-        );
-        break;
-
-      case mobilenet:
-        res = await Tflite.loadModel(
-            model: "assets/mobilenet_v1_1.0_224.tflite",
-            labels: "assets/mobilenet_v1_1.0_224.txt");
-        break;
-
-      case posenet:
-        res = await Tflite.loadModel(
-            model: "assets/posenet_mv1_075_float_from_checkpoints.tflite");
-        break;
-
-      default:
-        res = await Tflite.loadModel(
-            model: "assets/ssd_mobilenet.tflite",
-            labels: "assets/ssd_mobilenet.txt");
-    }
-    print(res);
+    String? res = await Tflite.loadModel(
+      model: "assets/ssd_mobilenet.tflite",
+      labels: "assets/ssd_mobilenet.txt");
   }
 
   onSelect(model) {
@@ -80,17 +61,36 @@ class _HomePageState extends State<HomePage> {
           child: Stack(
             children: [
               Camera(
-                widget.cameras,
                 _model,
                 setRecognitions,
+                // "https://s8.uupload.ir/files/images_86vx.jpeg",
+                // "https://s8.uupload.ir/files/cup2_0vwl.jpeg",
+                "https://s8.uupload.ir/files/download_9sk3.jpeg"
+              ),
+              Positioned(
+                bottom: 0,
+                right: 0,
+                child: InkWell(
+                  onTap: (){
+                    setState(() {
+
+                    });
+                  },
+                  child: Container(
+                    color: Colors.yellow,
+                    height: 56,
+                    width: 130,
+                  ),
+                )
               ),
               BndBox(
                   _recognitions ?? <Widget>[],
                   math.max(_imageHeight, _imageWidth),
                   math.min(_imageHeight, _imageWidth),
-                  screen.height,
-                  screen.width,
-                  _model),
+                  300,
+                  300,
+                  _model
+              ),
               // Column(
               //   mainAxisAlignment: MainAxisAlignment.start,
               //   crossAxisAlignment: CrossAxisAlignment.start,

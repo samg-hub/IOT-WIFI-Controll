@@ -53,7 +53,7 @@ class BndBox extends StatelessWidget {
             top: math.max(0, y),
             width: w,
             height: h,
-            child:re["detectedClass"] == "cup"? Container(
+            child:re["detectedClass"] != "kldwqf"? Container(
               padding: const EdgeInsets.only(top: 5.0, left: 5.0),
               decoration: BoxDecoration(
                 border: Border.all(
