@@ -1,16 +1,17 @@
 import 'dart:convert';
 import 'dart:io';
+import 'dart:math';
 import 'package:flutter/material.dart';
+import 'package:path_provider/path_provider.dart';
 import '../../constant/functions.dart';
-import '../../model/data/entity/homePage/homeModel.dart';
 import '../../model/data/remote/response/apiResponseModel.dart';
 import '../../model/data/remote/response/status.dart';
-import '../../model/data/repository/homePage/homeRepoImp.dart';
-import '../../view/components/dialogs/dialogTwoSelection.dart';
+import '../../model/data/repository/homePage/mainRepoImp.dart';
+import 'package:path/path.dart';
 
 class HomeViewModel extends ChangeNotifier{
   //this instance of HomeRepositoryImpl is for accessing to APIs
-  final _myRepo = HomeRepoImp();
+  final _myRepo = MainRepoImp();
 
   ApiResponse<dynamic> espInputResponse = ApiResponse.notCalled();
   void _setInputDataResponse(ApiResponse<String> response)async{
@@ -18,77 +19,80 @@ class HomeViewModel extends ChangeNotifier{
     try{
       espInputResponse = response;
       await Future.delayed(const Duration(milliseconds: 1));
+      debugPrintFunction("Update Status of _setInputData ${espInputResponse.status}");
       notifyListeners();
-      debugPrintFunction("Update Status of _setInputData");
     }catch(e){
       debugPrintFunction("_send Input Err : $e");
     }
   }
-  Future<void> sendInputData(String input)async{
-    debugPrintFunction("send Input...");
-    await _myRepo.sendInputRepo(input).onError((error, stackTrace){
-      debugPrintFunction("Error on sending Data $error");
-      _setInputDataResponse(ApiResponse.error(error.toString()));
-    }).then((value){
-      debugPrintFunction("input send Success");
-      _setInputDataResponse(ApiResponse.completed("Done"));
-    });
-  }
-
-  ApiResponse<HomeModel> homeDataResponse = ApiResponse.notCalled();
-  void _setHomeDataResponse(ApiResponse<HomeModel> response)async{
-    debugPrintFunction("__setHomeDataResponse");
-    try {
-      homeDataResponse = response;
-      await Future.delayed(const Duration(milliseconds: 1)); 
-      notifyListeners();
-      debugPrintFunction("update status : ${homeDataResponse.status}");
-    } catch (e) {
-      debugPrintFunction("home error : $e");
+  String getButtonLoginText(){
+    if(espInputResponse.status == Status.COMPLETED){
+      return "Connected, wait...";
+    }else if(espInputResponse.status == Status.COMPLETED){
+      return "Connect to IP";
+    }else{
+      return "Couldn't Connect, Tap to try again!";
     }
   }
-
-  //this method is for getting home data
-  Future<void> fetchHomeData({bool loading = true}) async {
-    debugPrintFunction("fetchHomeData");
-    if (homeDataResponse.status != Status.LOADING) {
-      if (loading == true) {
-        //اینجا برای اینکه کاربر متوجه آپدیت شدن صفحه نشه ما وضعیت لودینگ را حذف میکنیم
-        _setHomeDataResponse(ApiResponse.loading());
+  bool isSending = false;
+  int Status_code_x = 4;
+  int Status_code_y = 4;
+  int Status_code_close = 0;
+  int Status_code_left_right = 0;
+  Future<void> sendInputData({String? spcData})async{
+    if (isSending == false && espInputResponse.status != Status.LOADING) {
+      isSending = true;
+      _setInputDataResponse(ApiResponse.loading());
+      await Future.delayed(Duration(seconds: 1));
+      debugPrintFunction("send Input...*********************************************************************************");
+      await _myRepo.sendInputRepo(spcData ??
+          "$Status_code_x$Status_code_y$Status_code_left_right$Status_code_close")
+          .then((value) {
+        debugPrintFunction("input send Success");
+        _setInputDataResponse(ApiResponse.completed("Done"));
+      }).onError((error, stackTrace) {
+        debugPrintFunction("Error on sending Data $error");
+        _setInputDataResponse(ApiResponse.error(error.toString()));
+      });
+    }
+  }
+  bool isConnected = false;
+  bool isDetecting = false;
+  File? lastFile ;
+  Future<File?> fileFromImageUrl() async {
+    // "https://s8.uupload.ir/files/images_86vx.jpeg",
+    //https://s8.uupload.ir/files/images_ysw.jpeg
+    // "https://s8.uupload.ir/files/cup2_0vwl.jpeg",
+    // "https://s8.uupload.ir/files/download_9sk3.jpeg",
+    if(isDetecting == true) {
+      print("start to file from Image URL");
+      try {
+        final response = await _myRepo.getImage();
+        final documentDirectory = await getApplicationDocumentsDirectory();
+        final file = File(join(documentDirectory.path, '${generatePassword(8)}.jpg'));
+        file.writeAsBytesSync(response.bodyBytes);
+        print("---------------------------------------------------------response Image File = ${response.statusCode}");
+        lastFile = file;
+        return file;
+      } catch (error) {
+        print("error on fileFromImageUrl -> $error");
+        return null;
       }
-      await _myRepo.getHomeData()
-        .then((value) {
-          _setHomeDataResponse(ApiResponse.completed(value));
-      }).onError((error, stackTrace) {
-        _setHomeDataResponse(ApiResponse.error(error.toString()));
-      });
+    }else {
+      return null;
     }
   }
-  Future<dynamic> saveProfileData(int id, String name, String national_code,
-      String birth_date, String? image) async {
-    return await _myRepo.editProfile(
-      id, name, national_code, birth_date, image
-    );
+  int mapValue(double value, double fromLow, double fromHigh, double toLow,
+      double toHigh) {
+    double val1 =
+        ((value - fromLow) * (toHigh - toLow) / (fromHigh - fromLow)) + toLow;
+    return val1.round();
+  }
+  String generatePassword(int length) {
+    const chars = 'abcdefghijklmnopqrstuvwxyz0123456789';
+    final random = Random.secure();
+    return String.fromCharCodes(Iterable.generate(
+        length, (_) => chars.codeUnitAt(random.nextInt(chars.length))));
   }
 
-  /*********************    Start Send Image to Server  ************************/
-  File? loadImageFile;
-  File? get getLoadImageFile => loadImageFile;
-  Future<String?> getUploadedImageCode() async {
-    await sendImage();
-  }
-  Future<void> sendImage() async {
-    try {
-      var response = await _myRepo.uploadImage(getLoadImageFile!);
-      debugPrintFunction("response = $response");
-      await utf8.decoder.bind(response).join().then((value) {
-        Map<String, dynamic> temp = json.decode(value);
-      }).onError((error, stackTrace) {
-
-      });
-    } catch (e) {
-      debugPrintFunction("uploading error -> $e");
-    }
-  }
-  /*********************    End of Send Image to Server  ************************/
 }

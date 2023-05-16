@@ -1,50 +1,44 @@
 import 'dart:async';
-import 'dart:io';
-import 'dart:math';
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
-import 'package:path_provider/path_provider.dart';
 import 'package:tflite/tflite.dart';
-import 'package:path/path.dart';
-
-File? lastFile ;
+import 'package:v2rayadmin/viewModel/homeViewModel/homeViewModel.dart';
+import '../../constant/ui.dart';
 
 typedef void Callback(List<dynamic> list, int h, int w);
 
-class Camera extends StatefulWidget {
+class ImageShow extends StatefulWidget {
+  final HomeViewModel homeVM;
   final Callback setRecognitions;
-  final String picAddress;
   final double height;
   final double width;
-  Camera(this.setRecognitions,this.picAddress,this.height,this.width);
+  ImageShow(this.homeVM,this.setRecognitions,this.height,this.width);
 
   @override
-  _CameraState createState() => _CameraState();
+  _ImageShowState createState() => _ImageShowState();
 }
 
-class _CameraState extends State<Camera> {
+class _ImageShowState extends State<ImageShow> {
   // late CameraController controller;
-  bool isDetecting = false;
-  int _secondsRemaining = 10;
+  int _secondsRemaining = 5;
   Timer _timer = Timer(const Duration(milliseconds: 0), () {});
 
   @override
   void initState() {
     super.initState();
-    isDetecting = false;
+    widget.homeVM.isDetecting = false;
     startTimer();
   }
   void startTimer() {
     _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
         if (_secondsRemaining > 0) {
-          isDetecting = false;
+          widget.homeVM.isDetecting = false;
           _secondsRemaining--;
           print("timer = $_secondsRemaining");
         } else {
           setState(() {
-            isDetecting = true;
+            widget.homeVM.isDetecting = true;
             print("--------------------------timer restart");
-            _secondsRemaining =10;
+            _secondsRemaining =5;
           });
         }
     });
@@ -64,21 +58,21 @@ class _CameraState extends State<Camera> {
         children: [
           Container(
             decoration: BoxDecoration(
-              color: Colors.white,
-              border: Border.all(color: Colors.red,width: 3),
+              color: Colors.transparent,
+              // border: Border.all(color: cRed,width: 3),
               borderRadius: const BorderRadius.all(Radius.circular(10))
             ),
             height: widget.height,
             width: widget.width,
-            child:isDetecting == true? FutureBuilder(
-              future:fileFromImageUrl2(),
+            child:widget.homeVM.isDetecting == true? FutureBuilder(
+              future:widget.homeVM.fileFromImageUrl(),
               builder: (context, snapshot){
                 print("FutureBuilder Run : ${snapshot.connectionState.name} - ${snapshot.hasData}");
                 if(snapshot.hasData){
                   try{
                     Tflite.detectObjectOnImage(
                       path: snapshot.data!.path,
-                      numResultsPerClass: 5,
+                      numResultsPerClass: 1,
                       threshold:  0.3,
                     ).then((recognitions)async {
                       widget.setRecognitions(recognitions!, widget.height.toInt(), widget.width.toInt());
@@ -86,7 +80,7 @@ class _CameraState extends State<Camera> {
                   }catch(e){
                     print("error -> $e");
                   }
-                  return Image.file(snapshot.data!);
+                  return Image.file(snapshot.data!,fit: BoxFit.fitWidth,);
                 }else if(snapshot.hasError){
                   print("Status Tap tp try again...${snapshot.connectionState.name}");
                   return  Row(
@@ -98,7 +92,8 @@ class _CameraState extends State<Camera> {
                         decoration: const BoxDecoration(
                             borderRadius: BorderRadius.all(Radius.circular(10))
                         ),
-                        child: const Center(child: Text("Error Getting Data!, try again",style: TextStyle(color: Colors.black),),),
+                        child:Center(child: Text("Error Getting Data!, try again in $_secondsRemaining",
+                          style: const TextStyle(color: Colors.black),),),
                       )
                     ],
                   );
@@ -108,51 +103,26 @@ class _CameraState extends State<Camera> {
               },
             ):defaultPic(),
           ),
-          Positioned(
-            bottom: 0,
-            left: 0,
-            child: Container(
-              decoration: const BoxDecoration(
-                  color: Colors.red,
-                  borderRadius: BorderRadius.only(topRight: Radius.circular(10),bottomLeft: Radius.circular(10))
-              ),
-              child: const Padding(
-                padding: EdgeInsets.symmetric(horizontal: 10,vertical: 5),
-                child: Text("Disconnected"),
-              ),
-            ),
-          )
+          // Positioned(
+          //   top: 56,
+          //   left: 0,
+          //   child: Container(
+          //     decoration: BoxDecoration(
+          //         color: cRed,
+          //         borderRadius: const BorderRadius.only(topRight: Radius.circular(10),bottomLeft: Radius.circular(10))
+          //     ),
+          //     child: const Padding(
+          //       padding: EdgeInsets.symmetric(horizontal: 10,vertical: 5),
+          //       child: Text("Disconnected"),
+          //     ),
+          //   ),
+          // )
         ],
       ),
-      );
+    );
   }
   Widget defaultPic(){
-    return lastFile != null ?Image.file(lastFile!):
+    return widget.homeVM.lastFile != null ?Image.file(widget.homeVM.lastFile!,fit: BoxFit.fitWidth):
     const Center(child: CircularProgressIndicator(),);
-  }
-  Future<File?> fileFromImageUrl2() async {
-    if(isDetecting == true) {
-      print("start to file from Image URL");
-      try {
-        final response = await http.get(Uri.parse(widget.picAddress));
-        final documentDirectory = await getApplicationDocumentsDirectory();
-        final file = File(join(documentDirectory.path, '${generatePassword(6)}.jpg'));
-        file.writeAsBytesSync(response.bodyBytes);
-        print("---------------------------------------------------------response Image File = ${response.statusCode}");
-        lastFile = file;
-        return file;
-      } catch (error) {
-        print("error on fileFromImageUrl -> $error");
-        return null;
-      }
-    }else {
-      return null;
-    }
-  }
-  String generatePassword(int length) {
-    const chars = 'abcdefghijklmnopqrstuvwxyz0123456789';
-    final random = Random.secure();
-    return String.fromCharCodes(Iterable.generate(
-        length, (_) => chars.codeUnitAt(random.nextInt(chars.length))));
   }
 }

@@ -2,6 +2,8 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter_styled_toast/flutter_styled_toast.dart';
 import 'package:flutter/material.dart';
 
+Color cRed = const Color(0xffBE344B);
+Color cRedDark = const Color(0xff95051D);
 Color green = const Color(0xff00897B);
 Color lightGreen = const Color(0xffE8F5E9);
 Color darkGreen = const Color(0xff00796B);
@@ -21,24 +23,6 @@ dynamic cGradientDefault =const LinearGradient(colors: [
   Color(0xff522C5F),
   Color(0xffC82A4C),
 ],transform: GradientRotation(0.8));
-
-//TextStyle
-// TextStyle text_20 =
-// TextStyle(color: C_textColor, fontSize: 20, fontFamily: "vazir");
-// TextStyle text_16 =
-// TextStyle(color: C_textColor, fontSize: 16, fontFamily: "vazir");
-// TextStyle text_14 =
-// TextStyle(color: C_textColor, fontSize: 14, fontFamily: "vazir");
-// TextStyle text_14_bold =
-// TextStyle(color: C_textColor, fontSize: 14, fontFamily: "vazirbold");
-// TextStyle text_12 =
-// TextStyle(color: C_textColor, fontSize: 12, fontFamily: "vazir");
-// TextStyle text_12_bold =
-// TextStyle(color: C_textColor, fontSize: 12, fontFamily: "vazirbold");
-// TextStyle text_16_bold =
-// TextStyle(color: C_textColor, fontSize: 16, fontFamily: "vazirbold");
-// TextStyle text_20_bold =
-// TextStyle(color: C_textColor, fontSize: 20, fontFamily: "vazirbold");
 
 //IconSize
 Widget icons_48(Widget icon) {

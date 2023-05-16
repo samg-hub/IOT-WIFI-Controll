@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:v2rayadmin/view/pages/home.dart';
+import 'package:v2rayadmin/view/pages/controlPage.dart';
 import 'package:v2rayadmin/view/pages/mainPage.dart';
 
 import '../main.dart';
@@ -10,7 +10,7 @@ class RouteGenerator {
 
     switch (settings.name) {
       case '/':
-        return MaterialPageRoute(builder: (_) =>  HomePage());
+        return MaterialPageRoute(builder: (_) =>  ControllPage());
       default:
         return _errorRoute();
     }
