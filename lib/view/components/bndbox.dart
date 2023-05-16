@@ -1,7 +1,5 @@
-import 'dart:ffi';
 import 'package:flutter/material.dart';
 import 'dart:math' as math;
-import 'models.dart';
 
 class BndBox extends StatelessWidget {
   final List<dynamic>? results;
@@ -9,11 +7,9 @@ class BndBox extends StatelessWidget {
   final int previewW;
   final double screenH;
   final double screenW;
-  final String model;
   double h_y =-1 ;
   double w_x =-1 ;
-  BndBox(this.results, this.previewH, this.previewW, this.screenH, this.screenW,
-      this.model);
+  BndBox(this.results, this.previewH, this.previewW, this.screenH, this.screenW);
 
   @override
   Widget build(BuildContext context) {
@@ -47,7 +43,6 @@ class BndBox extends StatelessWidget {
             h = h0 * scaleH;
             if (y0 < difH / 2) h -= (difH / 2 - y0) * scaleH;
           }
-
           return Positioned(
             left: math.max(0, x),
             top: math.max(0, y),
@@ -80,83 +75,8 @@ class BndBox extends StatelessWidget {
         return [];
       }
     }
-    List<Widget> _renderStrings() {
-      double offset = -10;
-      if(results != null){
-        return results!.map((re) {
-          offset = offset + 14;
-          return Positioned(
-            left: 10,
-            top: offset,
-            width: screenW,
-            height: screenH,
-            child: Text(
-              "${re["label"]} ${(re["confidence"] * 100).toStringAsFixed(0)}%",
-              style: const TextStyle(
-                color: Color.fromRGBO(37, 213, 253, 1.0),
-                fontSize: 14.0,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-          );
-        }).toList();
-      }else{
-        return [];
-      }
-    }
-
-    List<Widget> _renderKeypoints() {
-      var lists = <Widget>[];
-      if(results != null){
-        results!.forEach((re) {
-          var list = re["keypoints"].values.map<Widget>((k) {
-            var x0 = k["x"];
-            var y0 = k["y"];
-            var scaleW, scaleH, x, y;
-
-            if (screenH / screenW > previewH / previewW) {
-              scaleW = screenH / previewH * previewW;
-              scaleH = screenH;
-              var difW = (scaleW - screenW) / scaleW;
-              x = (x0 - difW / 2) * scaleW;
-              y = y0 * scaleH;
-            } else {
-              scaleH = screenW / previewW * previewH;
-              scaleW = screenW;
-              var difH = (scaleH - screenH) / scaleH;
-              x = x0 * scaleW;
-              y = (y0 - difH / 2) * scaleH;
-            }
-            return Positioned(
-              left: x - 6,
-              top: y - 6,
-              width: 100,
-              height: 12,
-              child: Container(
-                child: Text(
-                  "● ${k["part"]}",
-                  style: const TextStyle(
-                    color: Color.fromRGBO(37, 213, 253, 1.0),
-                    fontSize: 12.0,
-                  ),
-                ),
-              ),
-            );
-          }).toList();
-
-          lists..addAll(list);
-        });
-
-        return lists;
-      }else{
-        return [];
-      }
-    }
-
     return Stack(
-      children: model == mobilenet
-          ? _renderStrings()
-          : model == posenet ? _renderKeypoints() : _renderBoxes(),
+      children:  _renderBoxes(),
     );
   }
   String status(){

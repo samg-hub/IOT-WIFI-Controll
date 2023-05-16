@@ -1,25 +1,20 @@
 import 'package:flutter/material.dart';
-import 'package:camera/camera.dart';
 import 'package:flutter/services.dart';
 import 'package:tflite/tflite.dart';
 import 'dart:math' as math;
-import 'camera.dart';
-import 'bndbox.dart';
-import 'models.dart';
+import '../components/camera.dart';
+import '../components/bndbox.dart';
 
 class HomePage extends StatefulWidget {
-
   HomePage();
-
   @override
   _HomePageState createState() => _HomePageState();
 }
 
 class _HomePageState extends State<HomePage> {
   List<dynamic> _recognitions = [];
-  int _imageHeight = 0;
-  int _imageWidth = 0;
-  String _model = "mobilenet";
+  int _imageHeight = 200;
+  int _imageWidth = 200;
 
   @override
   void initState() {
@@ -36,12 +31,6 @@ class _HomePageState extends State<HomePage> {
     String? res = await Tflite.loadModel(
       model: "assets/ssd_mobilenet.tflite",
       labels: "assets/ssd_mobilenet.txt");
-  }
-
-  onSelect(model) {
-    setState(() {
-      _model = model;
-    });
   }
 
   setRecognitions(recognitions, imageHeight, imageWidth) {
@@ -61,46 +50,20 @@ class _HomePageState extends State<HomePage> {
           child: Stack(
             children: [
               Camera(
-                _model,
                 setRecognitions,
                 // "https://s8.uupload.ir/files/images_86vx.jpeg",
                 // "https://s8.uupload.ir/files/cup2_0vwl.jpeg",
-                "https://s8.uupload.ir/files/download_9sk3.jpeg"
-              ),
-              Positioned(
-                bottom: 0,
-                right: 0,
-                child: InkWell(
-                  onTap: (){
-                    setState(() {
-
-                    });
-                  },
-                  child: Container(
-                    color: Colors.yellow,
-                    height: 56,
-                    width: 130,
-                  ),
-                )
+                "https://s8.uupload.ir/files/download_9sk3.jpeg",
+                _imageHeight.toDouble(),
+                _imageWidth.toDouble()
               ),
               BndBox(
                   _recognitions ?? <Widget>[],
                   math.max(_imageHeight, _imageWidth),
                   math.min(_imageHeight, _imageWidth),
-                  300,
-                  300,
-                  _model
+                  _imageWidth.toDouble(),
+                  _imageHeight.toDouble()
               ),
-              // Column(
-              //   mainAxisAlignment: MainAxisAlignment.start,
-              //   crossAxisAlignment: CrossAxisAlignment.start,
-              //   children: [
-              //     Text(math.max(_imageHeight, _imageWidth).toString()),
-              //     Text(math.min(_imageHeight, _imageWidth).toString()),
-              //     Text("--"+screen.height.toString()),
-              //     Text("--"+screen.width.toString())
-              //   ],
-              // )
             ],
           ),
         )
