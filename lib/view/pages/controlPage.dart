@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_joystick/flutter_joystick.dart';
 import 'package:provider/provider.dart';
 import 'package:tflite/tflite.dart';
+import 'package:v2rayadmin/constant/constants.dart';
 import 'package:v2rayadmin/viewModel/homeViewModel/homeViewModel.dart';
 import 'dart:math' as math;
 import '../../constant/ui.dart';
@@ -21,8 +22,8 @@ const List<Widget> options = <Widget>[
 ];
 class _ControllPageState extends State<ControllPage> {
   List<dynamic> _recognitions = [];
-  int _imageHeight = 200;
-  int _imageWidth = 200;
+  int _imageHeight = 240;
+  int _imageWidth = 320;
 
   final List<bool> _selectedOption = <bool>[true, false];
   String status_text = "Status";
@@ -55,8 +56,8 @@ class _ControllPageState extends State<ControllPage> {
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
-    _imageWidth = size.width.toInt();
-    _imageHeight = size.height.toInt() - 0;
+    // _imageWidth = size.width.toInt();
+    // _imageHeight = size.height.toInt() - 0;
     return ChangeNotifierProvider(
       create: (context) => HomeViewModel(),
       child: Consumer<HomeViewModel>(
@@ -84,7 +85,7 @@ class _ControllPageState extends State<ControllPage> {
                   ),
                   Positioned(
                     top: dSpace_16,left: dSpace_16,
-                    child:Text("http://192.168.4.1/",style: TextStyle(color: Colors.white,fontWeight: FontWeight.bold,fontSize: 16),),
+                    child:Text("Server IP : $ipAddress",style: const TextStyle(color: Colors.white,fontWeight: FontWeight.bold,fontSize: 16),),
                   ),
                   Positioned(
                     top: 0,right: 0,
@@ -115,7 +116,7 @@ class _ControllPageState extends State<ControllPage> {
                             minHeight: 40.0,
                             minWidth: 80.0,
                           ),
-                          textStyle: TextStyle(fontSize: 16,fontWeight: FontWeight.bold),
+                          textStyle: const TextStyle(fontSize: 16,fontWeight: FontWeight.bold),
                           isSelected: _selectedOption,
                           children: options,
                         ),
@@ -162,7 +163,6 @@ class _ControllPageState extends State<ControllPage> {
                                       onTapDown: (details) {
                                         setState(() {
                                           homeVM.Status_code_close = 1;
-                                          // isSending = true;
                                           homeVM.sendInputData();
                                         });
                                       },
@@ -170,7 +170,7 @@ class _ControllPageState extends State<ControllPage> {
                                         setState(() {
                                           homeVM.Status_code_close = 0;
                                           print("------------------------------------");
-                                          homeVM.isSending = false;
+                                          homeVM.sendInputData(finalData: true);
                                         });
                                       },
                                       overlayColor:
@@ -222,6 +222,7 @@ class _ControllPageState extends State<ControllPage> {
                                               print("------------------------------------");
                                               homeVM.isSending = false;
                                               homeVM.Status_code_left_right = 0;
+                                              homeVM.sendInputData(finalData: true);
                                             });
                                           }
                                         },
@@ -267,6 +268,7 @@ class _ControllPageState extends State<ControllPage> {
                                               print("------------------------------------");
                                               homeVM.isSending = false;
                                               homeVM.Status_code_left_right = 0;
+                                              homeVM.sendInputData(finalData:true);
                                             });
                                           }
                                         },
@@ -290,6 +292,7 @@ class _ControllPageState extends State<ControllPage> {
                             ),
                           ),
                           Joystick(
+                            period: const Duration(milliseconds: 0),
                             mode: JoystickMode.all,
                             stick: Container(
                               height: 40,width: 40,
@@ -307,6 +310,7 @@ class _ControllPageState extends State<ControllPage> {
                                 homeVM.sendInputData();
                               } else {
                                 print("------------------------------------");
+                                homeVM.sendInputData(finalData: true);
                                 homeVM.isSending = false;
                               }
                               // _sendMessage(details.x.toString());
@@ -329,5 +333,14 @@ class _ControllPageState extends State<ControllPage> {
         },
       ),
     );
+  }
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,
+      DeviceOrientation.portraitUp,
+    ]);
+    super.dispose();
   }
 }

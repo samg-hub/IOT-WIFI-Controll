@@ -43,9 +43,10 @@ class BndBox extends StatelessWidget {
             h = h0 * scaleH;
             if (y0 < difH / 2) h -= (difH / 2 - y0) * scaleH;
           }
+          Size size = MediaQuery.of(context).size;
           return Positioned(
-            left: math.max(0, x),
-            top: math.max(0, y),
+            left:(size.width/2 - 160)+ math.max(0, x) ,
+            top:(size.height/2 - 120)+math.max(0, y),
             width: w,
             height: h,
             child:re["detectedClass"] != "kldwqf"? Container(
@@ -57,11 +58,11 @@ class BndBox extends StatelessWidget {
                 ),
               ),
               child: Text(
-                "${re["detectedClass"]} ${(re["confidenceInClass"] * 100).toStringAsFixed(0)}% "
-                "\n ${status()}"
+                "${re["detectedClass"]} ${(re["confidenceInClass"] * 100).toStringAsFixed(0)}% ",
+                // "\n ${status()}"
                     // "x:${((x0 as double) * 100).toInt()},y:${((y0 as double) * 100).toInt()}"
                     // "\n h:${((h0 as double) * 100).toInt()},w:${((w0 as double) * 100).toInt()}"
-                    "\n ${((y0 as double)*100).toInt()}/100 - ${((h0 as double) *100).toInt()}/100 ",
+                    // "\n ${((y0 as double)*100).toInt()}/100 - ${((h0 as double) *100).toInt()}/100 ",
                 style: const TextStyle(
                   color:Colors.red,
                   fontSize: 14.0,

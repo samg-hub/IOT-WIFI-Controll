@@ -10,7 +10,7 @@ class RouteGenerator {
 
     switch (settings.name) {
       case '/':
-        return MaterialPageRoute(builder: (_) =>  ControllPage());
+        return MaterialPageRoute(builder: (_) =>  MainPage());
       default:
         return _errorRoute();
     }

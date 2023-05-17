@@ -2,12 +2,9 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 import 'package:http/http.dart' as http;
-import 'package:path/path.dart';
-import '../../../../constant/constants.dart';
+import 'package:v2rayadmin/constant/constants.dart';
 import '../../../../constant/functions.dart';
-import '../../local/shared/sharedPreference.dart';
 import '../appExceptions.dart';
-import 'apiEndPoints.dart';
 import 'baseApiService.dart';
 
 class NetworkApiService extends BaseApiService {
@@ -17,18 +14,22 @@ class NetworkApiService extends BaseApiService {
     //we should implement access token and refresh token managing here
     try {
       Map<String, String> headersValue = {
-        HttpHeaders.contentTypeHeader: 'application/json',
+        HttpHeaders.contentTypeHeader: 'image/jpeg',
       };
       final response = await http.get(
-          Uri.parse(baseUrl + url + queryParms),
+          Uri.parse("http://192.168.126.218/showImage?"),
           headers: headersValue).timeout(
           timeOutDuraion(),
           onTimeout: (){
             return timeOutException();
           }
       );
-      debugPrintFunction("GET _ $url /${response.statusCode} \n ${response.body}");
-      responseJson = returnResponse(response);
+      debugPrintFunction("GET _ $url /${response.statusCode}->${response.body}");
+      if(response.statusCode == 200){
+        responseJson = returnResponse(response);
+      }else{
+        responseJson = Future.error("Error");
+      }
     } on SocketException {
       throw FetchDataException('No Internet Connection');
     }
@@ -38,26 +39,27 @@ class NetworkApiService extends BaseApiService {
   @override
   Future postResponse(String url, Map<String, dynamic> jsonBody,
       {bool tokenSend = true}) async {
-    dynamic responseJson;
+    String responseJson;
     Map<String, String> headers = {
-      HttpHeaders.contentTypeHeader: 'application/json',
+      // HttpHeaders.contentTypeHeader: 'application/json',
+      // HttpHeaders.content
     };
     //we should implement access token and refresh token managing here
     try {
       final response = await http.post(
-        Uri.parse(baseUrl + url),
+        Uri.parse(ipAddress + url),
         headers: headers,
-        body: jsonEncode(jsonBody),
+        body: jsonBody
+        // body: jsonEncode(jsonBody),
       ).timeout(
           timeOutDuraion(),
           onTimeout: (){
             return timeOutException();
           }
       );
-      debugPrintFunction(url);
-      debugPrintFunction(
-          "POST/${response.statusCode} -> \n ${utf8.decode(response.bodyBytes)}");
-        responseJson = returnResponse(response);
+      // debugPrintFunction(
+          // "POST/${response.statusCode} -> ${utf8.decode(response.bodyBytes)}");
+        responseJson = utf8.decode(response.bodyBytes);
     } on SocketException {
       throw FetchDataException('No Internet Connection');
     }
@@ -103,6 +105,6 @@ class NetworkApiService extends BaseApiService {
         408));//Request Timeout response status code
   }
   Duration timeOutDuraion(){
-    return const Duration(seconds: 5);
+    return const Duration(seconds: 10);
   }
 }
