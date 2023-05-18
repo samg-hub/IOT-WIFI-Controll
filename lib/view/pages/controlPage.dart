@@ -13,19 +13,18 @@ import '../components/bndbox.dart';
 class ControllPage extends StatefulWidget {
   const ControllPage({super.key});
   @override
-  _ControllPageState createState() => _ControllPageState();
+  ControllPageState createState() => ControllPageState();
 }
 const List<Widget> options = <Widget>[
   Text('on'),
   Text('off'),
 ];
-class _ControllPageState extends State<ControllPage> {
+class ControllPageState extends State<ControllPage> {
   List<dynamic> _recognitions = [];
   int _imageHeight = 240;
   int _imageWidth = 320;
 
   final List<bool> _selectedOption = <bool>[true, false];
-  String status_text = "Status";
   bool isConnecting = true;
 
   @override
@@ -118,20 +117,18 @@ class _ControllPageState extends State<ControllPage> {
                         ),
                         _selectedOption[0]?Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 16),
-                          child: Container(
-                            child: InkWell(
-                              onTap: (){
-                                setState(() {
-                                  if(homeVM.Status_flash == 0){
-                                    homeVM.Status_flash = 1;
-                                  }else{
-                                    homeVM.Status_flash = 0;
-                                  }
-                                });
-                              },
-                              child:homeVM.Status_flash == 0?const Icon(Icons.flash_off_rounded,color: Colors.white,):
-                              const Icon(Icons.flash_on,color: Colors.white,),
-                            ),
+                          child: InkWell(
+                            onTap: (){
+                              setState(() {
+                                if(homeVM.statusFlash == 0){
+                                  homeVM.statusFlash = 1;
+                                }else{
+                                  homeVM.statusFlash = 0;
+                                }
+                              });
+                            },
+                            child:homeVM.statusFlash == 0?const Icon(Icons.flash_off_rounded,color: Colors.white,):
+                            const Icon(Icons.flash_on,color: Colors.white,),
                           ),
                         ):Container(width: 16,),
                       ],
@@ -146,7 +143,7 @@ class _ControllPageState extends State<ControllPage> {
                           mainAxisAlignment: MainAxisAlignment.start,
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Padding(child: const Text('Data :'),padding: EdgeInsets.only(left: dSpace_8,bottom: dSpace_4),),
+                            Padding(padding: EdgeInsets.only(left: dSpace_8,bottom: dSpace_4),child: const Text('Data :'),),
                             Container(
                               decoration: BoxDecoration(
                                   color: homeVM.lastStateTextColor(),
@@ -156,7 +153,7 @@ class _ControllPageState extends State<ControllPage> {
                               child: Text(homeVM.lastStateText(),style: const TextStyle(color: Colors.white),),
                             ),
                             SizedBox(height: dSpace_8,),
-                            Padding(child: const Text('Stream :'),padding: EdgeInsets.only(left: dSpace_8,bottom: dSpace_4),),
+                            Padding(padding: EdgeInsets.only(left: dSpace_8,bottom: dSpace_4),child: const Text('Stream :'),),
                             Container(
                               decoration: BoxDecoration(
                                   color: homeVM.lastStateImageColor(),
@@ -190,12 +187,11 @@ class _ControllPageState extends State<ControllPage> {
                                     child: InkWell(
                                       borderRadius: BorderRadius.circular(28),
                                       onTapDown: (details) {
-                                        homeVM.Status_code_close = 1;
+                                        homeVM.statusCodeClose = 1;
                                         homeVM.sendInputData();
                                       },
                                       onTapUp: (details) {
-                                        homeVM.Status_code_close = 0;
-                                        print("------------------------------------");
+                                        homeVM.statusCodeClose = 0;
                                       },
                                       overlayColor:
                                       MaterialStateColor.resolveWith(
@@ -228,20 +224,19 @@ class _ControllPageState extends State<ControllPage> {
                                         overlayColor:
                                         MaterialStateColor.resolveWith(
                                                 (states) =>
-                                                homeVM.Status_code_left_right == 1
+                                                homeVM.statusCodeLeftRight == 1
                                                 ? Colors.blue
                                                 : Colors.black38),
                                         onTapDown: (details) {
-                                          if (homeVM.Status_code_left_right == 0) {
-                                            homeVM.Status_code_left_right = 1;
+                                          if (homeVM.statusCodeLeftRight == 0) {
+                                            homeVM.statusCodeLeftRight = 1;
                                             homeVM.sendInputData();
                                           }
                                         },
                                         onTapUp: (details) {
-                                          if (homeVM.Status_code_left_right == 1) {
-                                              print("------------------------------------");
+                                          if (homeVM.statusCodeLeftRight == 1) {
                                               homeVM.isSending = false;
-                                              homeVM.Status_code_left_right = 0;
+                                              homeVM.statusCodeLeftRight = 0;
                                           }
                                         },
                                         child: Container(
@@ -268,20 +263,19 @@ class _ControllPageState extends State<ControllPage> {
                                         overlayColor:
                                         MaterialStateColor.resolveWith(
                                                 (states) =>
-                                                homeVM.Status_code_left_right == 2
+                                                homeVM.statusCodeLeftRight == 2
                                                 ? Colors.blue
                                                 : Colors.black38),
                                         onTapDown: (details) {
-                                          if (homeVM.Status_code_left_right == 0) {
-                                            homeVM.Status_code_left_right = 2;
+                                          if (homeVM.statusCodeLeftRight == 0) {
+                                            homeVM.statusCodeLeftRight = 2;
                                             homeVM.sendInputData();
                                           }
                                         },
                                         onTapUp: (details) {
-                                          if (homeVM.Status_code_left_right == 2) {
-                                            print("------------------------------------");
+                                          if (homeVM.statusCodeLeftRight == 2) {
                                             homeVM.isSending = false;
-                                            homeVM.Status_code_left_right = 0;
+                                            homeVM.statusCodeLeftRight = 0;
                                           }
                                         },
                                         child: Container(
@@ -315,13 +309,12 @@ class _ControllPageState extends State<ControllPage> {
                             ),
                             // period: Duration(milliseconds: 1000),
                             listener: (details) {
-                              homeVM.Status_code_x = homeVM.mapValue(details.x, -1, 1, 0, 8);
-                              homeVM.Status_code_y = homeVM.mapValue(details.y, -1, 1, 8, 0);
+                              homeVM.statusCodeX = homeVM.mapValue(details.x, -1, 1, 0, 8);
+                              homeVM.statusCodeY = homeVM.mapValue(details.y, -1, 1, 8, 0);
                               // isSending = true;
                               if (details.x != 0 && details.y != 0) {
                                 homeVM.sendInputData();
                               } else {
-                                print("------------------------------------");
                                 homeVM.isSending = false;
                               }
                               // _sendMessage(details.x.toString());

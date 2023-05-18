@@ -11,7 +11,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      title: "appName",
+      title: "SBUK Bot",
       theme: ThemeData.dark(),
       initialRoute: '/',
       // the routes are defined in generateRoute method

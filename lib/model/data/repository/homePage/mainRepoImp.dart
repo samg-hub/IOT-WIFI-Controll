@@ -1,5 +1,3 @@
-import 'package:http/http.dart' as http;
-import '../../../../constant/constants.dart';
 import '../../remote/network/apiEndPoints.dart';
 import '../../remote/network/baseApiService.dart';
 import '../../remote/network/networkApiService.dart';
@@ -15,7 +13,6 @@ class MainRepoImp implements MainRepo {
         ApiEndPoints().espInput,
         {"input" : input}
       );
-      print("sended ${response.toString()}");
       return response;
     }catch(e){
       return Future.error(e.toString());
@@ -25,7 +22,7 @@ class MainRepoImp implements MainRepo {
   @override
   Future<dynamic> getImage() async {
     try{
-      final response = await http.get(Uri.parse("${ipAddress}showImage?"));
+      final response = await _apiService.getResponse(ApiEndPoints().espImage);
       return response;
     }catch(e){
       return Future.error(e.toString());

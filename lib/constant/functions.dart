@@ -6,14 +6,3 @@ debugPrintFunction(Object? txt) {
     print(txt);
   }
 }
-Future<void> makePhoneCall(String phoneNumber) async {
-  debugPrintFunction("phone number is : $phoneNumber");
-  final Uri launchUri = Uri(
-    scheme: 'tel',
-    path: phoneNumber,
-  );
-  bool res = await canLaunchUrl(launchUri);
-  if (res) {
-    await launchUrl(launchUri);
-  }
-}

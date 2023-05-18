@@ -3,20 +3,22 @@ import 'package:flutter/material.dart';
 import 'package:tflite/tflite.dart';
 import 'package:v2rayadmin/viewModel/homeViewModel/homeViewModel.dart';
 
-typedef void Callback(List<dynamic> list, int h, int w);
+import '../../constant/functions.dart';
+
+typedef Callback = void Function(List<dynamic> list, int h, int w);
 
 class ImageShow extends StatefulWidget {
   final HomeViewModel homeVM;
   final Callback setRecognitions;
   final double height;
   final double width;
-  ImageShow(this.homeVM,this.setRecognitions,this.height,this.width);
+  const ImageShow(this.homeVM,this.setRecognitions,this.height,this.width, {super.key});
 
   @override
-  _ImageShowState createState() => _ImageShowState();
+  ImageShowState createState() => ImageShowState();
 }
 
-class _ImageShowState extends State<ImageShow> {
+class ImageShowState extends State<ImageShow> {
   // late CameraController controller;
   double _secondsRemaining = 1;
   Timer _timer = Timer(const Duration(milliseconds: 0), () {});
@@ -55,7 +57,7 @@ class _ImageShowState extends State<ImageShow> {
         alignment: AlignmentDirectional.center,
         child:Stack(
           children: [
-            Container(
+            SizedBox(
               height: widget.height,
               width: widget.width,
               child:widget.homeVM.isDetecting == true? FutureBuilder(
@@ -70,7 +72,7 @@ class _ImageShowState extends State<ImageShow> {
                       ).then((recognitions)async {
                         widget.setRecognitions(recognitions!, widget.height.toInt(), widget.width.toInt());
                       });
-                    }catch(e){}
+                    }catch(e){debugPrintFunction(e);}
                     return Image.file(snapshot.data!,fit: BoxFit.fitWidth);
                   }else if(snapshot.hasError){
                     return  Row(

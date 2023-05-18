@@ -59,10 +59,6 @@ class BndBox extends StatelessWidget {
               ),
               child: Text(
                 "${re["detectedClass"]} ${(re["confidenceInClass"] * 100).toStringAsFixed(0)}% ",
-                // "\n ${status()}"
-                    // "x:${((x0 as double) * 100).toInt()},y:${((y0 as double) * 100).toInt()}"
-                    // "\n h:${((h0 as double) * 100).toInt()},w:${((w0 as double) * 100).toInt()}"
-                    // "\n ${((y0 as double)*100).toInt()}/100 - ${((h0 as double) *100).toInt()}/100 ",
                 style: const TextStyle(
                   color:Colors.red,
                   fontSize: 14.0,

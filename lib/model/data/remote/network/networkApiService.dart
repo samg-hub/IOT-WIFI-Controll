@@ -11,25 +11,12 @@ class NetworkApiService extends BaseApiService {
   @override
   Future getResponse(String url, {String queryParms = ""}) async {
     dynamic responseJson;
-    //we should implement access token and refresh token managing here
     try {
-      Map<String, String> headersValue = {
-        HttpHeaders.contentTypeHeader: 'image/jpeg',
-      };
-      final response = await http.get(
-          Uri.parse("${ipAddress}showImage?"),
-          headers: headersValue).timeout(
+      final response = await http.get(Uri.parse("$ipAddress+$url")).timeout(
           timeOutDuraion(),
-          onTimeout: (){
-            return timeOutException();
-          }
       );
       debugPrintFunction("GET _ $url /${response.statusCode}->${response.body}");
-      if(response.statusCode == 200){
-        responseJson = returnResponse(response);
-      }else{
-        responseJson = Future.error("Error");
-      }
+      responseJson = response;
     } on SocketException {
       throw FetchDataException('No Internet Connection');
     }
@@ -40,25 +27,15 @@ class NetworkApiService extends BaseApiService {
   Future postResponse(String url, Map<String, dynamic> jsonBody,
       {bool tokenSend = true}) async {
     String responseJson;
-    Map<String, String> headers = {
-      // HttpHeaders.contentTypeHeader: 'application/json',
-      // HttpHeaders.content
-    };
-    //we should implement access token and refresh token managing here
     try {
       final response = await http.post(
         Uri.parse(ipAddress + url),
-        headers: headers,
         body: jsonBody
-        // body: jsonEncode(jsonBody),
       ).timeout(
           timeOutDuraion(),
-          onTimeout: (){
-            return timeOutException();
-          }
       );
-      // debugPrintFunction(
-          // "POST/${response.statusCode} -> ${utf8.decode(response.bodyBytes)}");
+      debugPrintFunction(
+          "POST/${response.statusCode} -> ${utf8.decode(response.bodyBytes)}");
         responseJson = utf8.decode(response.bodyBytes);
     } on SocketException {
       throw FetchDataException('No Internet Connection');
@@ -66,44 +43,6 @@ class NetworkApiService extends BaseApiService {
     return responseJson;
   }
 
-  dynamic returnResponse(http.Response response) {
-    var res = utf8.decode(response.bodyBytes);
-    dynamic responseJson = jsonDecode(res);
-    switch (response.statusCode) {
-      case 200:
-        return responseJson;
-      case 201:
-        return responseJson;
-      case 400:
-        throw UnauthorisedException(utf8.decode(response.bodyBytes));
-      case 401:
-        throw UnauthorisedException(utf8.decode(response.bodyBytes));
-      case 403:
-        throw UnauthorisedException(utf8.decode(response.bodyBytes));
-      case 404:
-        throw UnauthorisedException(utf8.decode(response.bodyBytes));
-      case 408:
-        throw UnauthorisedException(jsonEncode({
-          'detail':("درخواست شما ارسال نشد،مجددا تلاش کنید")
-        }));
-      case 429:
-        throw UnauthorisedException(utf8.decode(response.bodyBytes));
-      case 500:
-        throw UnauthorisedException(response.body.toString());
-      default:
-      //debugPrintFunction(response.body);
-        throw FetchDataException(
-            'Error occurred while communication with server' +
-                ' with status code : ${response.statusCode}');
-    }
-  }
-  dynamic timeOutException(){
-    return returnResponse(http.Response(
-        jsonEncode({
-          'detail':("")
-        }),
-        408));//Request Timeout response status code
-  }
   Duration timeOutDuraion(){
     return const Duration(seconds: 10);
   }

@@ -88,17 +88,17 @@ class HomeViewModel extends ChangeNotifier{
   }
 
   bool isSending = false;
-  int Status_code_x = 4;
-  int Status_code_y = 4;
-  int Status_code_close = 0;
-  int Status_code_left_right = 0;
-  int Status_flash = 0;
+  int statusCodeX = 4;
+  int statusCodeY = 4;
+  int statusCodeClose = 0;
+  int statusCodeLeftRight = 0;
+  int statusFlash = 0;
 
   Future<void> sendInputData({String? spcData})async{
     if (espImageResponse.status != Status.LOADING && espInputResponse.status != Status.LOADING) {
-      print("---------------------------------$Status_code_x$Status_code_y$Status_code_left_right$Status_code_close");
+      debugPrintFunction("---------------------------------$statusCodeX$statusCodeY$statusCodeLeftRight$statusCodeClose");
       _setInputDataResponse(ApiResponse.loading());
-      await _myRepo.sendInputRepo(spcData ?? "$Status_code_x$Status_code_y$Status_code_left_right$Status_code_close$Status_flash")
+      await _myRepo.sendInputRepo(spcData ?? "$statusCodeX$statusCodeY$statusCodeLeftRight$statusCodeClose$statusFlash")
       .then((value) {
         debugPrintFunction("input send Success -> $value");
         _setInputDataResponse(ApiResponse.completed(value));

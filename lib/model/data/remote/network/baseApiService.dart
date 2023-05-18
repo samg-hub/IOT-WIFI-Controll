@@ -1,6 +1,3 @@
-import 'dart:io';
-import 'package:http/http.dart' as http;
-
 import '../../../../constant/constants.dart';
 
 abstract class BaseApiService {
