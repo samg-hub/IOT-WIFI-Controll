@@ -1,16 +1,24 @@
-# Flutter Base MVVM
+# Android-IOS AI IOT Controll
 
-A new Flutter project.
+Due to HTTP-HTTPS communication and sending TCP packets, with this Application you can easily send your Image and Messages to you IOT-Server by sending a request.
+This connection is handled as a [FIFO]() connection, single-core processors.
+
+- Image processing is done by [YOLO AI]() model
+
+For using your model you can use [TFlite](https://pub.dev/packages/tflite) Lib.
 
 ## Getting Started
 
-This project is a starting point for a Flutter application.
+#### API's :
+-  ShowImage : (GET) -> [IP/showImage?/]()
+  
+-  Sending Message : (POST) -> [IP/submit/]() _ Form data (inputs:String)
 
-A few resources to get you started if this is your first Flutter project:
+#### Giude :
+This Application is based on [MVVM articheture](), for using this app put the IP of your device in the box and wait for the program to check your request after pressing the Connect Button.
+Your request will be sent to the following address:
+DEVICE_IP_ADDRESS:PORT/submit
+If the connection is established, you will go to the Controller page.
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+The received Photos will be processed by the program of the defined models and the user will be shown information such as the percentage of correct recognition of the model and the position of the object.
+for more information you can read TFlite Documents.
