@@ -86,7 +86,6 @@ flutter:
     - assets/ssd_mobilenet.tflite
     - assets/ssd_mobilenet.txt
     - assets/redbot.json
-    - assets/hiddenItem.jpeg
     - assets/icon.png
   # To add assets to your application, add an assets section, like this:
   # assets:

@@ -8,7 +8,6 @@ import 'package:v2rayadmin/model/data/remote/response/status.dart';
 import 'package:v2rayadmin/view/pages/controlPage.dart';
 import '../../viewModel/homeViewModel/homeViewModel.dart';
 
-int hiddenItem = 30;
 //this class is using in both of (Edit Profile in home) & (Login Page)
 class MainPage extends StatefulWidget {
   const MainPage({super.key});
@@ -17,7 +16,7 @@ class MainPage extends StatefulWidget {
 }
 
 class _MainPageState extends State<MainPage> {
-  ScrollController _scrollController = ScrollController();
+  final ScrollController _scrollController = ScrollController();
   String? birthCheck;
   @override
   void initState() {
@@ -49,9 +48,8 @@ class _MainPageState extends State<MainPage> {
               const Text('Guide',style: TextStyle(color: Colors.black87,fontSize: 20),),
               SizedBox(height: dSpace_8,),
               iconText(text: "Put the IP of your device in the box and wait for the program to check your request after pressing the connect button."
-                "Your request will be sent to the following address: \n"
-                  "DEVICE_IP_ADDRESS:PORT/submit\n"
-                "If the connection is established, you will go to the robot controller page.",icon: Container()),
+                "If the connection is established, you will go to the Robot controller page.\n"
+                  "All Documents on GitHub/Readme.md",icon: Container()),
               SizedBox(height: dSpace_16,),
               const Text('Developed by SAMG',style: TextStyle(color: Colors.black87,fontSize: 20),),
               SizedBox(height: dSpace_8,),
@@ -131,22 +129,7 @@ class _MainPageState extends State<MainPage> {
                                 child:SizedBox(
                                   height: MediaQuery.of(context).size.width - dSpace_32,
                                   width: MediaQuery.of(context).size.width,
-                                  child: InkWell(
-                                    onTap: () async{
-                                      hiddenItem--;
-                                      if (hiddenItem == 0){
-                                        setState(() {
-                                          hiddenItem = 0;
-                                        });
-                                        Future.delayed(const Duration(milliseconds: 1000)).then((value){
-                                          setState(() {
-                                            hiddenItem = 30;
-                                          });
-                                        });
-                                      }
-                                    },
-                                    child: hiddenItem == 0 ? Image.asset("assets/hiddenItem.jpeg") : Lottie.asset("assets/redbot.json",repeat: true),
-                                  )
+                                  child: Lottie.asset("assets/redbot.json",repeat: true),
                                 )
                               ),
                               Padding(
