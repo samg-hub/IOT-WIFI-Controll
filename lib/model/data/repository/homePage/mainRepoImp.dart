@@ -1,4 +1,5 @@
 import 'package:http/http.dart' as http;
+import '../../../../constant/constants.dart';
 import '../../remote/network/apiEndPoints.dart';
 import '../../remote/network/baseApiService.dart';
 import '../../remote/network/networkApiService.dart';
@@ -24,7 +25,7 @@ class MainRepoImp implements MainRepo {
   @override
   Future<dynamic> getImage() async {
     try{
-      final response = await http.get(Uri.parse("http://192.168.126.218/showImage?"));
+      final response = await http.get(Uri.parse("${ipAddress}showImage?"));
       return response;
     }catch(e){
       return Future.error(e.toString());

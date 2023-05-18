@@ -7,7 +7,6 @@ import 'package:v2rayadmin/constant/constants.dart';
 import 'package:v2rayadmin/viewModel/homeViewModel/homeViewModel.dart';
 import 'dart:math' as math;
 import '../../constant/ui.dart';
-import '../../model/data/remote/network/baseApiService.dart';
 import '../components/imageShow.dart';
 import '../components/bndbox.dart';
 
@@ -55,9 +54,6 @@ class _ControllPageState extends State<ControllPage> {
 
   @override
   Widget build(BuildContext context) {
-    Size size = MediaQuery.of(context).size;
-    // _imageWidth = size.width.toInt();
-    // _imageHeight = size.height.toInt() - 0;
     return ChangeNotifierProvider(
       create: (context) => HomeViewModel(),
       child: Consumer<HomeViewModel>(
@@ -85,7 +81,7 @@ class _ControllPageState extends State<ControllPage> {
                   ),
                   Positioned(
                     top: dSpace_16,left: dSpace_16,
-                    child:Text("Server IP : $ipAddress",style: const TextStyle(color: Colors.white,fontWeight: FontWeight.bold,fontSize: 16),),
+                    child:Text("Server IP : $ipInput",style: const TextStyle(color: Colors.white,fontWeight: FontWeight.bold,fontSize: 16),),
                   ),
                   Positioned(
                     top: 0,right: 0,
@@ -120,25 +116,58 @@ class _ControllPageState extends State<ControllPage> {
                           isSelected: _selectedOption,
                           children: options,
                         ),
-                        Padding(
+                        _selectedOption[0]?Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 16),
-                          child: Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Container(
-                                decoration: BoxDecoration(
-                                    color: homeVM.isConnected ? Colors.green : Colors.red,
-                                    borderRadius:
-                                    const BorderRadius.all(Radius.circular(10))),
-                                height: 20,
-                                width: 20,
-                              )
-                            ],
+                          child: Container(
+                            child: InkWell(
+                              onTap: (){
+                                setState(() {
+                                  if(homeVM.Status_flash == 0){
+                                    homeVM.Status_flash = 1;
+                                  }else{
+                                    homeVM.Status_flash = 0;
+                                  }
+                                });
+                              },
+                              child:homeVM.Status_flash == 0?const Icon(Icons.flash_off_rounded,color: Colors.white,):
+                              const Icon(Icons.flash_on,color: Colors.white,),
+                            ),
                           ),
-                        ),
+                        ):Container(width: 16,),
                       ],
                     ),
                   ),
+                  _selectedOption[0]?
+                      Positioned(
+                        top: 56 + dSpace_16,
+                        left: dSpace_16,
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Padding(child: const Text('Data :'),padding: EdgeInsets.only(left: dSpace_8,bottom: dSpace_4),),
+                            Container(
+                              decoration: BoxDecoration(
+                                  color: homeVM.lastStateTextColor(),
+                                  borderRadius: BorderRadius.circular(5)
+                              ),
+                              padding: EdgeInsets.symmetric(horizontal: dSpace_16,vertical: dSpace_8),
+                              child: Text(homeVM.lastStateText(),style: const TextStyle(color: Colors.white),),
+                            ),
+                            SizedBox(height: dSpace_8,),
+                            Padding(child: const Text('Stream :'),padding: EdgeInsets.only(left: dSpace_8,bottom: dSpace_4),),
+                            Container(
+                              decoration: BoxDecoration(
+                                  color: homeVM.lastStateImageColor(),
+                                  borderRadius: BorderRadius.circular(5)
+                              ),
+                              padding: EdgeInsets.symmetric(horizontal: dSpace_16,vertical: dSpace_8),
+                              child: Text(homeVM.lastStateImage(),style: const TextStyle(color: Colors.white),),
+                            )
+                          ],
+                        ),
+                      ):Container(),
                   Positioned(
                     left: 0,right: 0,bottom: 0,
                     child: Padding(
@@ -161,17 +190,12 @@ class _ControllPageState extends State<ControllPage> {
                                     child: InkWell(
                                       borderRadius: BorderRadius.circular(28),
                                       onTapDown: (details) {
-                                        setState(() {
-                                          homeVM.Status_code_close = 1;
-                                          homeVM.sendInputData();
-                                        });
+                                        homeVM.Status_code_close = 1;
+                                        homeVM.sendInputData();
                                       },
                                       onTapUp: (details) {
-                                        setState(() {
-                                          homeVM.Status_code_close = 0;
-                                          print("------------------------------------");
-                                          homeVM.sendInputData(finalData: true);
-                                        });
+                                        homeVM.Status_code_close = 0;
+                                        print("------------------------------------");
                                       },
                                       overlayColor:
                                       MaterialStateColor.resolveWith(
@@ -209,21 +233,15 @@ class _ControllPageState extends State<ControllPage> {
                                                 : Colors.black38),
                                         onTapDown: (details) {
                                           if (homeVM.Status_code_left_right == 0) {
-                                            setState(() {
-                                              // isSending = true;
-                                              homeVM.sendInputData();
-                                              homeVM.Status_code_left_right = 1;
-                                            });
+                                            homeVM.Status_code_left_right = 1;
+                                            homeVM.sendInputData();
                                           }
                                         },
                                         onTapUp: (details) {
                                           if (homeVM.Status_code_left_right == 1) {
-                                            setState(() {
                                               print("------------------------------------");
                                               homeVM.isSending = false;
                                               homeVM.Status_code_left_right = 0;
-                                              homeVM.sendInputData(finalData: true);
-                                            });
                                           }
                                         },
                                         child: Container(
@@ -255,21 +273,15 @@ class _ControllPageState extends State<ControllPage> {
                                                 : Colors.black38),
                                         onTapDown: (details) {
                                           if (homeVM.Status_code_left_right == 0) {
-                                            setState(() {
-                                              // isSending = true;
-                                              homeVM.sendInputData();
-                                              homeVM.Status_code_left_right = 2;
-                                            });
+                                            homeVM.Status_code_left_right = 2;
+                                            homeVM.sendInputData();
                                           }
                                         },
                                         onTapUp: (details) {
                                           if (homeVM.Status_code_left_right == 2) {
-                                            setState(() {
-                                              print("------------------------------------");
-                                              homeVM.isSending = false;
-                                              homeVM.Status_code_left_right = 0;
-                                              homeVM.sendInputData(finalData:true);
-                                            });
+                                            print("------------------------------------");
+                                            homeVM.isSending = false;
+                                            homeVM.Status_code_left_right = 0;
                                           }
                                         },
                                         child: Container(
@@ -292,7 +304,7 @@ class _ControllPageState extends State<ControllPage> {
                             ),
                           ),
                           Joystick(
-                            period: const Duration(milliseconds: 0),
+                            period: const Duration(milliseconds: 200),
                             mode: JoystickMode.all,
                             stick: Container(
                               height: 40,width: 40,
@@ -310,7 +322,6 @@ class _ControllPageState extends State<ControllPage> {
                                 homeVM.sendInputData();
                               } else {
                                 print("------------------------------------");
-                                homeVM.sendInputData(finalData: true);
                                 homeVM.isSending = false;
                               }
                               // _sendMessage(details.x.toString());
@@ -319,9 +330,9 @@ class _ControllPageState extends State<ControllPage> {
                         ],
                       )
                           : Column(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: [
-                          const Text("Controll Buttuns is not Active")
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            children: const [
+                            Text("Controll Buttuns is not Active")
                         ],
                       ),
                     ),

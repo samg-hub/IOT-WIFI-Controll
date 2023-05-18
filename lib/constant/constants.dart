@@ -1,4 +1,5 @@
-String ipAddress = "aryaseir.ir:8080";
+String ipAddress = "";
+String ipInput = "";
 
 String sharedAccessToken = "ACCESS_TOKEN";
 String sharedRefreshToken = "REFRESH_TOKEN";

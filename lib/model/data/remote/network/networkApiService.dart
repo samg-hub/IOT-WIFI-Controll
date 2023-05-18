@@ -17,7 +17,7 @@ class NetworkApiService extends BaseApiService {
         HttpHeaders.contentTypeHeader: 'image/jpeg',
       };
       final response = await http.get(
-          Uri.parse("http://192.168.126.218/showImage?"),
+          Uri.parse("${ipAddress}showImage?"),
           headers: headersValue).timeout(
           timeOutDuraion(),
           onTimeout: (){

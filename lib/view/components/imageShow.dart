@@ -28,7 +28,7 @@ class _ImageShowState extends State<ImageShow> {
     startTimer();
   }
   void startTimer() {
-    _timer = Timer.periodic(const Duration(milliseconds: 500), (timer) {
+    _timer = Timer.periodic(const Duration(milliseconds: 700), (timer) {
         if (_secondsRemaining > 0) {
           widget.homeVM.isDetecting = false;
           _secondsRemaining--;
@@ -48,7 +48,7 @@ class _ImageShowState extends State<ImageShow> {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.only(left: 0),
+      padding: const EdgeInsets.only(left: 0),
       child: OverflowBox(
         maxHeight: widget.height,
         maxWidth: widget.width,
@@ -61,7 +61,6 @@ class _ImageShowState extends State<ImageShow> {
               child:widget.homeVM.isDetecting == true? FutureBuilder(
                 future:widget.homeVM.fileFromImageUrl(),
                 builder: (context, snapshot){
-                  print("FutureBuilder Run : ${snapshot.connectionState.name} - ${snapshot.hasData}");
                   if(snapshot.hasData){
                     try{
                       Tflite.detectObjectOnImage(
@@ -71,12 +70,9 @@ class _ImageShowState extends State<ImageShow> {
                       ).then((recognitions)async {
                         widget.setRecognitions(recognitions!, widget.height.toInt(), widget.width.toInt());
                       });
-                    }catch(e){
-                      print("error -> $e");
-                    }
+                    }catch(e){}
                     return Image.file(snapshot.data!,fit: BoxFit.fitWidth);
                   }else if(snapshot.hasError){
-                    print("Status Tap tp try again...${snapshot.connectionState.name}");
                     return  Row(
                       mainAxisSize: MainAxisSize.min,
                       mainAxisAlignment: MainAxisAlignment.center,

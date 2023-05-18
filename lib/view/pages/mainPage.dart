@@ -133,18 +133,17 @@ class _MainPageState extends State<MainPage> {
                                   width: MediaQuery.of(context).size.width,
                                   child: InkWell(
                                     onTap: () async{
-                                          print(hiddenItem);
-                                          hiddenItem--;
-                                          if (hiddenItem == 0){
-                                            setState(() {
-                                              hiddenItem = 0;
-                                            });
-                                            Future.delayed(Duration(milliseconds: 1000)).then((value){
-                                              setState(() {
-                                                hiddenItem = 30;
-                                              });
-                                            });
-                                          }
+                                      hiddenItem--;
+                                      if (hiddenItem == 0){
+                                        setState(() {
+                                          hiddenItem = 0;
+                                        });
+                                        Future.delayed(const Duration(milliseconds: 1000)).then((value){
+                                          setState(() {
+                                            hiddenItem = 30;
+                                          });
+                                        });
+                                      }
                                     },
                                     child: hiddenItem == 0 ? Image.asset("assets/hiddenItem.jpeg") : Lottie.asset("assets/redbot.json",repeat: true),
                                   )
@@ -200,9 +199,10 @@ class _MainPageState extends State<MainPage> {
                                     overlayColor: MaterialStateColor.resolveWith((states) => cRedDark),
                                     borderRadius: BorderRadius.circular(10),
                                     onTap: ()async{
-                                      ipAddress = "http://"+homeVm.ipController.text+"/";
+                                      ipAddress = "http://${homeVm.ipController.text}/";
+                                      ipInput = homeVm.ipController.text;
                                       await homeVm.sendInputData(spcData: "9999");
-                                      await Future.delayed(Duration(seconds: 1));
+                                      await Future.delayed(const Duration(seconds: 1));
                                       if(homeVm.espInputResponse.status == Status.COMPLETED){
                                         Navigator.of(context).push(MaterialPageRoute(builder: (context) => ControllPage(),));
                                       }
