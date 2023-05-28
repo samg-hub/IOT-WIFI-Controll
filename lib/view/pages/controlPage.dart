@@ -341,7 +341,6 @@ class ControllPageState extends State<ControllPage> {
   }
   @override
   void dispose() {
-    // TODO: implement dispose
     SystemChrome.setPreferredOrientations([
       DeviceOrientation.portraitUp,
       DeviceOrientation.portraitUp,

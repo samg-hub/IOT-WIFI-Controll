@@ -187,7 +187,7 @@ class _MainPageState extends State<MainPage> {
                                       await homeVm.sendInputData(spcData: "9999");
                                       await Future.delayed(const Duration(seconds: 1));
                                       if(homeVm.espInputResponse.status == Status.COMPLETED){
-                                        Navigator.of(context).push(MaterialPageRoute(builder: (context) => ControllPage(),));
+                                        Navigator.of(context).push(MaterialPageRoute(builder: (context) => const ControllPage(),));
                                       }
                                     },
                                     child: Center(
@@ -208,10 +208,5 @@ class _MainPageState extends State<MainPage> {
           },
         )
     );
-  }
-  @override
-  void dispose() {
-    // TODO: implement dispose
-    super.dispose();
   }
 }
