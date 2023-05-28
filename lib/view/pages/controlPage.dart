@@ -125,6 +125,7 @@ class ControllPageState extends State<ControllPage> {
                                 }else{
                                   homeVM.statusFlash = 0;
                                 }
+                                homeVM.sendInputData();
                               });
                             },
                             child:homeVM.statusFlash == 0?const Icon(Icons.flash_off_rounded,color: Colors.white,):
