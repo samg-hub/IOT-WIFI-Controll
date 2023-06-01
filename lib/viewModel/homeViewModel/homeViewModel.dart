@@ -62,11 +62,9 @@ class HomeViewModel extends ChangeNotifier{
   }
   ApiResponse<dynamic> espInputResponse = ApiResponse.notCalled();
   void _setInputDataResponse(ApiResponse<String> response)async{
-    // debugPrintFunction("_sendInputData");
     try{
       espInputResponse = response;
       await Future.delayed(const Duration(milliseconds: 1));
-      // debugPrintFunction("Update Status of _setInputData ${espInputResponse.status}");
       notifyListeners();
     }catch(e){
       debugPrintFunction("_send Input Err : $e");
@@ -114,20 +112,16 @@ class HomeViewModel extends ChangeNotifier{
   Future<File?> fileFromImageUrl() async {
     if(isDetecting == true && espImageResponse.status != Status.LOADING && espInputResponse.status != Status.LOADING) {
       _setImageDataResponse(ApiResponse.loading());
-      // print("start to file from Image URL");
       try {
         final response = await _myRepo.getImage();
         final documentDirectory = await getApplicationDocumentsDirectory();
         final file = File(join(documentDirectory.path, '${generatePassword(8)}.jpg'));
         file.writeAsBytesSync(response.bodyBytes);
-        // print("---------------------------------------------------------response Image File = ${response.statusCode}");
         _setImageDataResponse(ApiResponse.completed("Done"));
         lastFile = file;
         return file;
       } catch (error) {
         _setImageDataResponse(ApiResponse.error("Failed"));
-
-        // print("error on fileFromImageUrl -> $error");
         return null;
       }
     }else {

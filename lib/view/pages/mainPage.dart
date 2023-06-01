@@ -184,9 +184,10 @@ class _MainPageState extends State<MainPage> {
                                     onTap: ()async{
                                       ipAddress = "http://${homeVm.ipController.text}/";
                                       ipInput = homeVm.ipController.text;
-                                      await homeVm.sendInputData(spcData: "9999");
+                                      await homeVm.fileFromImageUrl();
                                       await Future.delayed(const Duration(seconds: 1));
-                                      if(homeVm.espInputResponse.status == Status.COMPLETED){
+                                      if(homeVm.espImageResponse.status == Status.COMPLETED){
+                                        homeVm.espImageResponse.status =Status.NOTCALLED; // reset status
                                         Navigator.of(context).push(MaterialPageRoute(builder: (context) => const ControllPage(),));
                                       }
                                     },
