@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:lottie/lottie.dart';
 import 'package:provider/provider.dart';
-import 'package:v2rayadmin/constant/constants.dart';
-import 'package:v2rayadmin/constant/ui.dart';
-import 'package:v2rayadmin/model/data/remote/response/status.dart';
-import 'package:v2rayadmin/view/pages/controlPage.dart';
+import 'package:sbukBot/constant/constants.dart';
+import 'package:sbukBot/constant/ui.dart';
+import 'package:sbukBot/model/data/remote/response/status.dart';
+import 'package:sbukBot/view/pages/controlPage.dart';
 import '../../viewModel/homeViewModel/homeViewModel.dart';
 
 //this class is using in both of (Edit Profile in home) & (Login Page)

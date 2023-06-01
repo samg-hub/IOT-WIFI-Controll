@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:v2rayadmin/routing/routeGenerator.dart';
+import 'package:sbukBot/routing/routeGenerator.dart';
 
 Future<Null> main() async {
   runApp(const MyApp());

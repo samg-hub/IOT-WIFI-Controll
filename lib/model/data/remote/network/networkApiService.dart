@@ -2,7 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 import 'package:http/http.dart' as http;
-import 'package:v2rayadmin/constant/constants.dart';
+import 'package:sbukBot/constant/constants.dart';
 import '../../../../constant/functions.dart';
 import '../appExceptions.dart';
 import 'baseApiService.dart';

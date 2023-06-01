@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:v2rayadmin/view/pages/mainPage.dart';
+import 'package:sbukBot/view/pages/mainPage.dart';
 class RouteGenerator {
   static Route<dynamic> generateRoute(RouteSettings settings) {
     final args = settings.arguments;

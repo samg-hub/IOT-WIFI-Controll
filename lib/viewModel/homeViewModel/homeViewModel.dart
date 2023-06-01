@@ -2,7 +2,7 @@ import 'dart:io';
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:v2rayadmin/constant/ui.dart';
+import 'package:sbukBot/constant/ui.dart';
 import '../../constant/functions.dart';
 import '../../model/data/remote/response/apiResponseModel.dart';
 import '../../model/data/remote/response/status.dart';

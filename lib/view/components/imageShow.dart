@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:tflite/tflite.dart';
-import 'package:v2rayadmin/viewModel/homeViewModel/homeViewModel.dart';
+import 'package:sbukBot/viewModel/homeViewModel/homeViewModel.dart';
 
 import '../../constant/functions.dart';
 

@@ -1,6 +1,6 @@
 //this is a class for managing api response
 
-import 'package:v2rayadmin/model/data/remote/response/status.dart';
+import 'package:sbukBot/model/data/remote/response/status.dart';
 class ApiResponse<T> {
 
   Status? status;
