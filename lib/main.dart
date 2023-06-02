@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:sbukBot/routing/routeGenerator.dart';
 
-Future<Null> main() async {
+Future<void> main() async {
   runApp(const MyApp());
 }
 

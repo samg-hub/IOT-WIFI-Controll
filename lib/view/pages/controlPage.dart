@@ -323,9 +323,9 @@ class ControllPageState extends State<ControllPage> {
                           ),
                         ],
                       )
-                          : Column(
+                          : const Column(
                             mainAxisAlignment: MainAxisAlignment.end,
-                            children: const [
+                            children: [
                             Text("Controll Buttuns is not Active")
                         ],
                       ),
