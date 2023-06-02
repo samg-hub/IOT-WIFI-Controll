@@ -7,8 +7,6 @@ class BndBox extends StatelessWidget {
   final int previewW;
   final double screenH;
   final double screenW;
-  double h_y =-1 ;
-  double w_x =-1 ;
   BndBox(this.results, this.previewH, this.previewW, this.screenH, this.screenW);
 
   @override
@@ -20,8 +18,6 @@ class BndBox extends StatelessWidget {
           var w0 = re["rect"]["w"];
           var y0 = re["rect"]["y"];
           var h0 = re["rect"]["h"];
-          h_y = 0.5-(y0 + h0/2);
-          w_x = 0.5-(x0 + w0/2);
           var scaleW, scaleH, x, y, w, h;
 
           if (screenH / screenW > previewH / previewW) {
@@ -75,31 +71,5 @@ class BndBox extends StatelessWidget {
     return Stack(
       children:  _renderBoxes(),
     );
-  }
-  String status(){
-    double goal = 0.05;
-    int verticalState = 0;
-    int horizantalState = 0;
-
-    if((h_y > goal)){
-      verticalState = 1;
-    }
-    if((h_y < goal)){
-      verticalState = -1;
-    }
-
-    if((w_x > goal)){
-      horizantalState = 1;
-    }
-    if((w_x < goal)){
-      horizantalState = -1;
-    }
-    if((w_x >=-goal && w_x <= goal)){
-      horizantalState = 0;
-    }
-    if((h_y >=-goal && h_y <= goal)){
-      verticalState = 0;
-    }
-    return "$verticalState   $horizantalState";
   }
 }
