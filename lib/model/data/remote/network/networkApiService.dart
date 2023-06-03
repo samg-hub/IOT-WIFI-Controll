@@ -12,10 +12,18 @@ class NetworkApiService extends BaseApiService {
   Future getResponse(String url, {String queryParms = ""}) async {
     dynamic responseJson;
     try {
-      final response = await http.get(Uri.parse("$ipAddress+$url")).timeout(
+      final response = await http.get(
+        Uri.parse("$ipAddress$url"),
+        headers: {
+          HttpHeaders.contentTypeHeader : "text/plain" 
+        }
+      ).timeout(
           timeOutDuraion(),
       );
-      debugPrintFunction("GET _ $url /${response.statusCode}->${response.body}");
+      debugPrintFunction("GET _ $ipAddress$url /${response.statusCode}->${response.body}");
+      if (response.statusCode != 200) {
+        throw FetchDataException("500 Error");
+      }
       responseJson = response;
     } on SocketException {
       throw FetchDataException('No Internet Connection');
@@ -36,6 +44,9 @@ class NetworkApiService extends BaseApiService {
       );
       debugPrintFunction(
           "POST/${response.statusCode} -> ${utf8.decode(response.bodyBytes)}");
+      if (response.statusCode != 200) {
+        throw FetchDataException("500 error");
+      }
         responseJson = utf8.decode(response.bodyBytes);
     } on SocketException {
       throw FetchDataException('No Internet Connection');

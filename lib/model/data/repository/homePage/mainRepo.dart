@@ -4,4 +4,5 @@ class MainRepo {
     return null;
   }
   Future<void> getImage() async {}
+  Future<void> testConn() async {}
 }

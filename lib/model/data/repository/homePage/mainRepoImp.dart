@@ -28,4 +28,14 @@ class MainRepoImp implements MainRepo {
       return Future.error(e.toString());
     }
   }
+  
+  @override
+  Future<dynamic> testConn() async{
+    try{
+      final response = await _apiService.getResponse(ApiEndPoints().espCheckConn);
+      return response;
+    }catch(e){
+      return Future.error(e.toString());
+    }
+  }
 }

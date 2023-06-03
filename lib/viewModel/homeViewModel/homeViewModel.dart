@@ -60,6 +60,27 @@ class HomeViewModel extends ChangeNotifier{
       return "Please waite, Reloading..";
     }
   }
+  ApiResponse<dynamic> espConnResponse = ApiResponse.notCalled();
+  void _setConnDataResponse(ApiResponse<String> response)async{
+    try{
+      espConnResponse = response;
+      await Future.delayed(const Duration(milliseconds: 1));
+      notifyListeners();
+    }catch(e){
+      debugPrintFunction("_send Input Err : $e");
+    }
+  }
+  Future<void> testConn()async{
+    _setConnDataResponse(ApiResponse.loading());
+    await _myRepo.testConn()
+    .then((value) {
+      debugPrintFunction("CONN send Success");
+      _setConnDataResponse(ApiResponse.completed("Success"));
+    }).onError((error, stackTrace) {
+      debugPrintFunction("Error on cONN Data $error");
+      _setConnDataResponse(ApiResponse.error(error.toString()));
+    });
+  }
   ApiResponse<dynamic> espInputResponse = ApiResponse.notCalled();
   void _setInputDataResponse(ApiResponse<String> response)async{
     try{
